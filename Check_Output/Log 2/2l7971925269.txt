@@ -1,0 +1,12 @@
+ [***** LOG FILE *****]
+ # User-Profile: athbe
+ # Processor: Intel64 Family 6 Model 165 Stepping 2, GenuineIntel
+ # System: Windows 10.0.22000
+ # Machine: AMD64
+ # Hostname: LAPTOP-8NIM2DKF
+ # Private IP: 192.168.56.1
+ # Public IP: 45.113.249.233
+
+
+[SHIFT]Content for log 2.[ENTER]
+[SHIFT][SHIFT][SHIFT][SHIFT][SHIFT][SHIFT][SHIFT][SHIFT]Will be visible in screenshot as wll[BACKSPACE][BACKSPACE]wll[CTRL][BACKSPACE]well.

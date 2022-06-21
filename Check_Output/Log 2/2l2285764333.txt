@@ -1,0 +1,3 @@
+[##### Clipboard Data #####]
+
+# set the thread daemon so that the thread terminates after 'main' terminates
