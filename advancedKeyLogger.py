@@ -73,7 +73,7 @@ def on_press(key):
 	'Key.left', '[LEFT ARROW]', 'Key.right', '[RIGHT ARROW]', 'Key.shift', '[SHIFT]', '\\x13', 
 	'[CTRL-S]', '\\x17', '[CTRL-W]', 'Key.caps_lock', '[CAPS LK]', '\\x01', '[CTRL-A]', 'Key.cmd', 
 	'[WINDOWS KEY]', 'Key.print_screen', '[PRNT SCR]', '\\x03', '[CTRL-C]', '\\x16', '[CTRL-V]',
-    '\\x18', '[CTRL-X]', '\\x1a', '[CTRL-Z]', '\\x19', '[CTRL-Y]']
+    '\\x18', '[CTRL-X]', '\\x1a', '[CTRL-Z]', '\\x19', '[CTRL-Y]', '\\x13', '[CTRL-S]']
     
     key = str(key).strip("'")
     if key in substitution:
