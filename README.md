@@ -17,10 +17,11 @@ Building an advanced keylogger using Python. The script will log key strokes as 
 3) ***on_release()*** is a callback to call when a button is released. I have used *'ESC'* to terminate the script.
 4) ***send_email()*** is used to send email using [SMTP Protocol](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol) over [Gmail SMTP server](https://www.tutorialspoint.com/send-mail-from-your-gmail-account-using-python) (port no. 587)
 5) ***random_file_path()*** will help generate the files at random locations. I have used *'Downloads, Documents, Music*.
-6) ***clipboard()*** will fetch data from clipboard using [win32clipboard](http://timgolden.me.uk/pywin32-docs/win32clipboard.html) module.
-7) ***screenshot()*** captures a screenshot of the screen at the time of sending the log. Module used - [ImageGrab](https://pillow.readthedocs.io/en/stable/reference/ImageGrab.html)
-8) ***log_file()*** will create a .txt file consisting of the key-strokes.
-9) After every specified time interval, ***send_logs()*** will generate the log files and send them via email using the defined functions. Further, it will permanently delete those files from the system.
+6) I am using *random* to generate random file names with numbers ranging 1000000000 to 9999999999.
+7) ***clipboard()*** will fetch data from clipboard using [win32clipboard](http://timgolden.me.uk/pywin32-docs/win32clipboard.html) module.
+8) ***screenshot()*** captures a screenshot of the screen at the time of sending the log. Module used - [ImageGrab](https://pillow.readthedocs.io/en/stable/reference/ImageGrab.html)
+9) ***log_file()*** will create a .txt file consisting of the key-strokes.
+10) After every specified time interval, ***send_logs()*** will generate the log files and send them via email using the defined functions. Further, it will permanently delete those files from the system.
 
 
 
